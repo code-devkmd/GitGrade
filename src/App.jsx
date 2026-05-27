@@ -327,16 +327,22 @@ const LoadingScreen = ({ step }) => (
 // --- MAIN APP COMPONENT ---
 
 export default function App() {
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState("");
-  const [error, setError] = useState("");
-  const [profileData, setProfileData] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
+    const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [loadingStep, setLoadingStep] = useState("");
+    const [error, setError] = useState("");
+    const [profileData, setProfileData] = useState(null);
+    const [analysis, setAnalysis] = useState(null);
 
-  const analyzeProfile = async (e) => {
-    e.preventDefault();
-    if (!username.trim()) return;
+    const trimmedApiKey = (groqApiKey || "").trim();
+
+    const analyzeProfile = async (e) => {
+      e.preventDefault();
+      if (!username.trim()) return;
+      if (!trimmedApiKey) {
+        setError("Missing Groq API key. Add VITE_GROQ_API_KEY to your environment.");
+        return;
+      }
     
     setLoading(true);
     setError("");
@@ -418,7 +424,7 @@ export default function App() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${groqApiKey.trim()}`,
+             Authorization: `Bearer ${trimmedApiKey}`,
           },
           body: JSON.stringify(groqPayload),
         }
@@ -465,13 +471,13 @@ export default function App() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-medium mb-6">
             <Activity className="w-4 h-4" /> Powered by Groq AI
           </div>
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 leading-tight">
                 Rate your GitHub.
                 <br />
                 <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
                   Get Job Ready.
                 </span>
-              </h2>
+              </h1>
               <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
                 Get an instant AI-powered professional assessment of your GitHub profile to stand out to tech recruiters.
               </p>
